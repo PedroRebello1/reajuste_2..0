@@ -8,9 +8,9 @@ import pyperclip
 
 
 COORD = {
-    "searchbar": (642, 103),
-    "protocolo": (378, 292),
-    "searchbar2": (1507, 247),
+    "searchbar": (352, 147),
+    "protocolo": (387, 342),
+    "searchbar2": (789, 251),
 }
 
 

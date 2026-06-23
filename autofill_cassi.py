@@ -36,12 +36,12 @@ except Exception as e:
 
 # --- COORDENADAS E DICIONÁRIOS ---
 COORD = {
-    "plano_sys2": (2654, 590),
-    "nome": (2830, 710),
-    "num_plano": (2600, 630),
-    "jump": (2867, 804),
-    "jump2": (2867, 250),
-    "data_adesao": (2467, 267)
+    "plano_sys2": (1183, 594),
+    "nome": (1388, 712),
+    "num_plano": (1155, 632),
+    "jump": (1425, 804),
+    "jump2": (1425, 250),
+    "data_adesao": (1022, 267)
 }
 
 MODELOS_PLANO = {
@@ -147,7 +147,7 @@ def copiar_texto_mouse(coord):
             return pyperclip.paste().strip()
 
         x_inicio, y_inicio = coord
-        x_fim = 2350
+        x_fim = 850
 
         pyautogui.click(x_inicio, y_inicio)
         pyautogui.dragTo(x_fim, y_inicio, duration=0.3, button='left')
