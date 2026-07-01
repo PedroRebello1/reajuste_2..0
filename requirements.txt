@@ -1,0 +1,17 @@
+os
+re
+time
+unicodedata
+pyautogui
+pyperclip
+pandas
+datetime
+DocxTemplate
+subprocess
+tkinter
+docxtpl
+pywin32
+
+
+
+    
