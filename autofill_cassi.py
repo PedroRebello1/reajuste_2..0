@@ -83,7 +83,7 @@ MES_REAJUSTE_POR_PLANO = {
     "vida": 11
 }
 vida_2026_active = False
-essencial_2026_active = False
+essencial_2026_active = True
 
 def plano_2026_ativo(tipo_plano):
     if tipo_plano == "vida":
@@ -119,6 +119,9 @@ def calcular_anos_para_gerar(ano_adesao, mes_adesao, tipo_plano=None):
     elif ano_adesao == 2024:
         if "2025" not in anos:
             anos.append("2025")
+    elif ano_adesao == 2025:
+        if ativo_2026 and "2026" not in anos:
+            anos.append("2026")
 
     if ativo_2026 and ano_adesao <= 2025 and mes_adesao <= MES_LIMITE_REAJUSTE_2026:
         if "2026" not in anos:
@@ -168,11 +171,30 @@ def mes_por_extenso(data_obj):
 def remover_acentos(txt):
     return unicodedata.normalize('NFKD', txt).encode('ASCII', 'ignore').decode('utf-8').lower()
 
+# Apelidos/abreviações regionais que aparecem no nome do plano Vida
+# (ex.: "CASSI VIDA BH") mapeados para a cidade correspondente no ans_vida.csv.
+# Chave e valor em minúsculas/sem acento. Adicione novos conforme aparecerem.
+APELIDOS_ANS = {
+    "bh": "belo horizonte",
+    "bsb": "brasilia",
+    "poa": "porto alegre",
+    "floripa": "florianopolis",
+    "cwb": "curitiba",
+    "rp": "ribeirao preto",
+}
+
 def buscar_ans(texto_plano):
     if df_ans is None:
         return "UFANS", "NUMEROANS"
-    
+
     texto_clean = remover_acentos(texto_plano)
+
+    # Expande apelidos regionais (ex.: "bh" -> "belo horizonte") para que o
+    # nome abreviado do plano Vida case com a cidade do ans_vida.csv.
+    for apelido, cidade in APELIDOS_ANS.items():
+        if re.search(rf'\b{apelido}\b', texto_clean):
+            texto_clean += " " + cidade
+
     for _, row in df_ans.iterrows():
         uf_clean = remover_acentos(str(row['UF']))
         
@@ -333,10 +355,13 @@ def fill():
 
                 if tipo_plano == "vida":
                     uf, ans = buscar_ans(texto_plano)
+                    if uf == "UFANS" or ans == "NUMEROANS":
+                        print(f"-> ATENÇÃO: UF/ANS não identificada no plano '{texto_plano}'. "
+                              f"Verifique o documento e/ou cadastre o apelido em APELIDOS_ANS.")
                     substituicoes["UFANS"] = uf
                     substituicoes["NUMEROANS"] = ans
                 elif tipo_plano == "essencial":
-                    substituicoes["MESADESAO"] = mes_por_extenso(data_adesao_obj)
+                    substituicoes["MESADESAO"] = 'JUNHO'
                     substituicoes["NOMEPLANO"] = texto_plano
                     substituicoes["PORCENTAGEMAUMENTO"] = valor_encontrado
                 elif tipo_plano == "familia1":
