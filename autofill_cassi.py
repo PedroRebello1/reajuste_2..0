@@ -77,7 +77,7 @@ MODELOS_PLANO = {
     }
 }
 
-MES_LIMITE_REAJUSTE_2026 = 7
+MES_LIMITE_REAJUSTE_2026 = 8
 MES_REAJUSTE_POR_PLANO = {
     "essencial": 6,
     "vida": 11
