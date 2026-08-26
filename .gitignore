@@ -1,0 +1,8 @@
+# Saída gerada: contém nome/contrato de beneficiários reais
+prontos/
+
+# Arquivos de lock do Word (abertos durante a edição dos modelos)
+~$*
+
+__pycache__/
+*.pyc
