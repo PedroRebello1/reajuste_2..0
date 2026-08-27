@@ -74,14 +74,33 @@ MODELOS_PLANO = {
         "2024": "./modelos/2024/gdi.docx",
         "2025": "./modelos/2025/gdi.docx",
         "2026": "./modelos/2026/gdi.docx"
+    },
+    # FAMÍLIA INTEGRAL / FAMÍLIA PARTICIPATIVO: planos criados em 2026, então só
+    # existem avisos de 2026 em diante. São o mesmo plano (mesmo registro ANS e
+    # mesmo reajuste em todas as UFs) e só se diferenciam pelo modelo.
+    "integral": {
+        "2026": "./modelos/2026/integral.docx"
+    },
+    "participativo": {
+        "2026": "./modelos/2026/participativo.docx"
     }
 }
 
-MES_LIMITE_REAJUSTE_2026 = 7
+# Mês (sempre no dia 1) em que o reajuste de cada plano cai a cada ano.
+# Planos família I/II não entram aqui: reajustam no mês de aniversário da adesão.
 MES_REAJUSTE_POR_PLANO = {
     "essencial": 6,
-    "vida": 11
+    "vida": 11,
+    "gdi": 4,
+    "integral": 8,
+    "participativo": 8
 }
+
+# Até que mês os reajustes de um ano ainda em curso já foram liberados.
+# Reajuste com mês posterior ao limite ainda não aconteceu, então não gera aviso.
+MES_LIMITE_REAJUSTE_2026 = 9
+MES_LIMITE_POR_ANO = {2026: MES_LIMITE_REAJUSTE_2026}
+
 vida_2026_active = False
 essencial_2026_active = True
 
@@ -92,40 +111,38 @@ def plano_2026_ativo(tipo_plano):
         return essencial_2026_active
     return True
 
+def mes_do_reajuste(tipo_plano, mes_adesao):
+    """Mês em que o reajuste do plano cai a cada ano.
+
+    Planos com mês fixo vêm de MES_REAJUSTE_POR_PLANO; família I/II reajustam
+    no mês de aniversário da adesão.
+    """
+    return MES_REAJUSTE_POR_PLANO.get(tipo_plano, mes_adesao)
+
 def calcular_anos_para_gerar(ano_adesao, mes_adesao, tipo_plano=None):
-    if tipo_plano == "gdi":
-        anos = []
-        if ano_adesao < 2024:
-            return ["2024", "2025", "2026"]
-        elif ano_adesao == 2024:
-            return ["2024", "2025", "2026"] if mes_adesao < 4 else ["2025", "2026"]
-        elif ano_adesao == 2025:
-            return ["2025", "2026"] if mes_adesao < 4 else ["2026"]
-        elif ano_adesao == 2026 and mes_adesao < 4:
-            return ["2026"]
-        return anos
-
     anos = []
-    ativo_2026 = plano_2026_ativo(tipo_plano)
+    mes_reajuste = mes_do_reajuste(tipo_plano, mes_adesao)
 
-    mes_reajuste = MES_REAJUSTE_POR_PLANO.get(tipo_plano)
-    if mes_reajuste and mes_adesao <= (mes_reajuste - 1):
-        ano_mesmo_ano = str(ano_adesao)
-        if ano_mesmo_ano in {"2024", "2025"} or (ano_mesmo_ano == "2026" and ativo_2026):
-            anos.append(ano_mesmo_ano)
+    # Os anos possíveis são os que têm modelo cadastrado para o plano.
+    for ano in sorted(MODELOS_PLANO.get(tipo_plano, {})):
+        ano_int = int(ano)
 
-    if ano_adesao < 2024:
-        anos.extend(["2024", "2025"])
-    elif ano_adesao == 2024:
-        if "2025" not in anos:
-            anos.append("2025")
-    elif ano_adesao == 2025:
-        if ativo_2026 and "2026" not in anos:
-            anos.append("2026")
+        if ano_int == 2026 and not plano_2026_ativo(tipo_plano):
+            continue
 
-    if ativo_2026 and ano_adesao <= 2025 and mes_adesao <= MES_LIMITE_REAJUSTE_2026:
-        if "2026" not in anos:
-            anos.append("2026")
+        # O reajuste sempre cai no dia 1, então comparar (ano, mês) equivale a
+        # comparar as datas cheias: quem aderiu em qualquer dia anterior ao
+        # reajuste — mesmo 1 dia antes — recebe o aviso; quem aderiu no dia do
+        # reajuste ou depois, não.
+        if (ano_adesao, mes_adesao) >= (ano_int, mes_reajuste):
+            continue
+
+        # Reajuste de ano ainda em curso que não chegou a acontecer.
+        limite = MES_LIMITE_POR_ANO.get(ano_int)
+        if limite is not None and mes_reajuste > limite:
+            continue
+
+        anos.append(ano)
 
     return anos
 
@@ -186,7 +203,7 @@ APELIDOS_ANS = {
 def buscar_ans(texto_plano):
     if df_ans is None:
         return "UFANS", "NUMEROANS"
-
+    
     texto_clean = remover_acentos(texto_plano)
 
     # Expande apelidos regionais (ex.: "bh" -> "belo horizonte") para que o
@@ -318,6 +335,15 @@ def fill():
         elif "dependentes indiretos" in texto_lower:
             tipo_plano = "gdi"
             chave_csv = "gdi"
+        # FAMÍLIA PARTICIPATIVO / FAMÍLIA INTEGRAL vêm com a UF no final
+        # ("... – SP"), que é descartada: o plano é o mesmo em todas as UFs.
+        # Precisam vir antes de "família i", que casa com "FAMÍLIA INTEGRAL".
+        elif "participativo" in texto_lower:
+            tipo_plano = "participativo"
+            chave_csv = "participativo"
+        elif "integral" in texto_lower:
+            tipo_plano = "integral"
+            chave_csv = "integral"
         elif "família ii" in texto_lower or "família 2" in texto_lower or "familia 2" in texto_lower or "familia ii" in texto_lower or "fam2" in texto_lower:
             data_limite_fam2 = datetime(2004, 1, 1)
             tipo_plano = "familia2ae" if data_adesao_obj < data_limite_fam2 else "familia2de"
@@ -371,8 +397,12 @@ def fill():
                     substituicoes["MESADESAO"] = mes_por_extenso(data_adesao_obj)
                     substituicoes["PORCENTAGEMAUMENTO"] = valor_encontrado
                     substituicoes["NOMEPLANO"] = texto_plano
+                elif tipo_plano in ["integral", "participativo"]:
+                    # Percentual e mês já estão fixos no modelo: só NOMEBENEFICIARIO
+                    # e NUMEROPLANO precisam ser preenchidos.
+                    pass
                 elif tipo_plano == "gdi":
-                    pass 
+                    pass
 
                 caminho_modelo = MODELOS_PLANO.get(tipo_plano, {}).get(ano_alvo)
                 if caminho_modelo and os.path.exists(caminho_modelo):

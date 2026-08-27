@@ -1,25 +1,33 @@
+# TODO: Make this shit work again
+# TODO: Try selecting fields with mouse movement
+# TODO: Integração ao SOC via request - Databricks Gold
+
+
+
+# Versão manual
+## Para acessar a versão executável acesse: github.com/PedroRebello1/reajuste_2.0 - Ainda indisponível
 # Automatizacao de Reajustes
 
 Automacao em Python para capturar dados na tela (via `pyautogui`), identificar beneficiario/protocolo e gerar documentos de reajuste com base nos modelos e tabelas CSV do projeto.
 
----
-**Essa versão foi otimizada e pré-configurada para rodar utilizando apenas uma tela (Monitor esquerdo), no computador** `SEDEWKS825900`**, com os aplicativos abertos em tela dividida da seguinte forma:**
+## Status da versao executavel
 
-`Edge em "cassi.lightning.force.com"` (50%) | `SOC Produção` (50%)
+Repositorio da versao executavel:
+`github.com/PedroRebello1/reajuste_2.0`
 
----
+No momento, esta versao esta indisponivel.
 
 ## Requisitos
 
-- Windows 11.
-- Visual Studio Code ou outra IDE de sua preferência
+- Windows (fluxo atual usa coordenadas fixas de tela).
 - Python 3.10+ instalado e no `PATH`.
 - Dependencias do `requirements.txt`.
 - Arquivos de dados presentes na raiz:
 	- `valores.csv`
 	- `ans_vida.csv`
-- Modelos `.docx` em `modelos/2024`, `modelos/2025` e `modelos/2026`
-- Opcional para gerar PDF automaticamente: Word instalado e com conta logada
+- Modelos `.docx` em `modelos/2024` e `modelos/2025`.
+- Opcional para gerar PDF automaticamente: LibreOffice instalado em
+	`C:\Program Files\LibreOffice\program\soffice.exe`.
 
 ## Instalacao
 
@@ -30,16 +38,6 @@ Automacao em Python para capturar dados na tela (via `pyautogui`), identificar b
 ```bash
 pip install -r requirements.txt
 ```
-
-## Ajuste de coordenadas (importante)
-
-As automacoes dependem das coordenadas definidas nos arquivos Python (`COORD`).
-Se o clique estiver em local errado, ajuste os valores para o seu monitor/resolucao.
-
-Arquivos com coordenadas:
-
-- `searcher.py`
-- `autofill_cassi.py`
 
 ## Como executar
 
@@ -52,9 +50,25 @@ python searcher.py
 Fluxo de execucao:
 
 1. O script abre uma janela para digitar protocolos.
-2. Voce pode separar protocolos por `,`, `;`, `.`, ou espaco. **(recomenda-se usar apenas 1 protocolo por vez)**
+2. Voce pode separar protocolos por `,`, `;`, `.`, ou espaco.
 3. Para cada protocolo, o script busca no sistema, pede confirmacoes por janelas e executa o preenchimento.
 4. Os arquivos gerados sao salvos em `prontos/`.
+
+Tambem e possivel executar o mesmo fluxo com:
+
+```bash
+python test.py
+```
+
+## Ajuste de coordenadas (importante)
+
+As automacoes dependem das coordenadas definidas nos arquivos Python (`COORD`).
+Se o clique estiver em local errado, ajuste os valores para o seu monitor/resolucao.
+
+Arquivos com coordenadas:
+
+- `searcher.py`
+- `autofill_cassi.py`
 
 ## Estrutura resumida
 
@@ -70,11 +84,11 @@ Fluxo de execucao:
 - Nenhum documento gerado:
 	confira se os CSVs e modelos existem e se o plano foi mapeado.
 - PDF nao gerado:
-	verifique se o Word esta instalado e a conta conectada (com pacote 365).
+	verifique se o LibreOffice esta instalado no caminho esperado.
 - Captura de texto incorreta:
 	revise coordenadas e foco da janela do sistema antes de rodar.
 
 ## Observacoes
 
 - Durante a execucao, nao mova janelas nem altere resolucao/zoom do sistema.
-- Os scripts foram pensados para execucao assistida (com confirmacoes manuais indicadas pelos pop-ups).
+- Os scripts foram pensados para execucao assistida (com confirmacoes manuais em popups).

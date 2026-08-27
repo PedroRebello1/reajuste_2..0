@@ -1,0 +1,11 @@
+# Saída gerada: contém nome/contrato de beneficiários reais
+prontos/
+
+# Arquivos de lock do Word (abertos durante a edição dos modelos)
+~$*
+
+# Backups gerados por corrigir_modelo.py (o original está no histórico do git)
+*.docx.bak
+
+__pycache__/
+*.pyc
