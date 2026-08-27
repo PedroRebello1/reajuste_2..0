@@ -10,6 +10,17 @@
 
 Automacao em Python para capturar dados na tela (via `pyautogui`), identificar beneficiario/protocolo e gerar documentos de reajuste com base nos modelos e tabelas CSV do projeto.
 
+---
+**Essa versão foi otimizada e pré-configurada para rodar utilizando apenas uma tela (Monitor esquerdo), no computador** `SEDEWKS825900`**, com os aplicativos abertos em tela dividida da seguinte forma:**
+
+`Edge em "cassi.lightning.force.com"` (50%) | `SOC Produção` (50%)
+
+Esta e a unica diferenca em relacao a branch `main`: as coordenadas de `COORD`
+(em `searcher.py` e `autofill_cassi.py`) e o `x_fim` estao calibrados para esse
+arranjo de tela unica. Todo o restante do codigo e dos modelos acompanha a `main`.
+
+---
+
 ## Status da versao executavel
 
 Repositorio da versao executavel:
@@ -25,9 +36,8 @@ No momento, esta versao esta indisponivel.
 - Arquivos de dados presentes na raiz:
 	- `valores.csv`
 	- `ans_vida.csv`
-- Modelos `.docx` em `modelos/2024` e `modelos/2025`.
-- Opcional para gerar PDF automaticamente: LibreOffice instalado em
-	`C:\Program Files\LibreOffice\program\soffice.exe`.
+- Modelos `.docx` em `modelos/2024`, `modelos/2025` e `modelos/2026`.
+- Opcional para gerar PDF automaticamente: Word instalado e com a conta conectada.
 
 ## Instalacao
 
@@ -50,15 +60,9 @@ python searcher.py
 Fluxo de execucao:
 
 1. O script abre uma janela para digitar protocolos.
-2. Voce pode separar protocolos por `,`, `;`, `.`, ou espaco.
+2. Voce pode separar protocolos por `,`, `;`, `.`, ou espaco. **(recomenda-se usar apenas 1 protocolo por vez)**
 3. Para cada protocolo, o script busca no sistema, pede confirmacoes por janelas e executa o preenchimento.
 4. Os arquivos gerados sao salvos em `prontos/`.
-
-Tambem e possivel executar o mesmo fluxo com:
-
-```bash
-python test.py
-```
 
 ## Ajuste de coordenadas (importante)
 
@@ -74,8 +78,9 @@ Arquivos com coordenadas:
 
 - `searcher.py`: orquestra o fluxo de busca de protocolos e chamadas do preenchimento.
 - `autofill_cassi.py`: captura campos na tela e gera os documentos com base nos modelos/CSV.
+- `corrigir_modelo.py`: corrige defeitos de layout herdados da conversao HTML dos modelos.
 - `modelos/`: templates `.docx` por ano e tipo de plano.
-- `prontos/`: saida dos arquivos gerados.
+- `prontos/`: saida dos arquivos gerados (fora do controle de versao).
 
 ## Solucao de problemas
 
@@ -84,7 +89,7 @@ Arquivos com coordenadas:
 - Nenhum documento gerado:
 	confira se os CSVs e modelos existem e se o plano foi mapeado.
 - PDF nao gerado:
-	verifique se o LibreOffice esta instalado no caminho esperado.
+	verifique se o Word esta instalado e a conta conectada (com pacote 365).
 - Captura de texto incorreta:
 	revise coordenadas e foco da janela do sistema antes de rodar.
 
