@@ -64,14 +64,14 @@ def search_beneficiario(nome: str) -> None:
     pyautogui.press("enter")
 
 
-def run_fill() -> None:
+def run_fill(protocolo: str | None = None) -> None:
     module = importlib.import_module("autofill_cassi")
     fill_function = getattr(module, "fill", None)
     if not callable(fill_function):
         raise AttributeError(
             "Erro importando fill()"
         )
-    fill_function()
+    fill_function(protocolo)
 
 
 def main() -> None:
@@ -96,7 +96,7 @@ def main() -> None:
         show_ok_message("Selecione o beneficiário e clique em OK.")
 
         try:
-            run_fill()
+            run_fill(numero)
             print(f"Protocolo {numero} processado com sucesso.")
         except Exception as exc:
             print(f"Erro ao executar fill() para o protocolo {numero}: {exc}")
