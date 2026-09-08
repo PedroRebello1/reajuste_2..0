@@ -98,7 +98,7 @@ MES_REAJUSTE_POR_PLANO = {
 
 # Até que mês os reajustes de um ano ainda em curso já foram liberados.
 # Reajuste com mês posterior ao limite ainda não aconteceu, então não gera aviso.
-MES_LIMITE_REAJUSTE_2026 = 9
+MES_LIMITE_REAJUSTE_2026 = 10
 MES_LIMITE_POR_ANO = {2026: MES_LIMITE_REAJUSTE_2026}
 
 vida_2026_active = False
@@ -292,7 +292,7 @@ def converter_para_pdf(caminho_docx):
 # --- EXECUÇÃO ---
 # =====================================================================
 
-def fill():
+def fill(protocolo=None):
     print("\nCapturando dados...")
     time.sleep(0.2)
 
@@ -352,7 +352,7 @@ def fill():
             tipo_plano = "familia1"
             chave_csv = "fam1"
         else:
-            print("Status: Plano não mapeado nas regras atuais.")
+            print(f"O participante {nome_beneficiario}, do protocolo {protocolo}, possui um plano não mapeado: {texto_plano}")
 
         if tipo_plano and df_valores is not None:
             anos_para_gerar = calcular_anos_para_gerar(ano_adesao, mes_adesao, tipo_plano)
