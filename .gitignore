@@ -9,3 +9,6 @@ prontos/
 
 __pycache__/
 *.pyc
+
+# Instruções para o Claude Code: só deve existir localmente na pasta main
+CLAUDE.md
