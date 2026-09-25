@@ -98,7 +98,7 @@ MES_REAJUSTE_POR_PLANO = {
 
 # Até que mês os reajustes de um ano ainda em curso já foram liberados.
 # Reajuste com mês posterior ao limite ainda não aconteceu, então não gera aviso.
-MES_LIMITE_REAJUSTE_2026 = 10
+MES_LIMITE_REAJUSTE_2026 = 11
 MES_LIMITE_POR_ANO = {2026: MES_LIMITE_REAJUSTE_2026}
 
 vida_2026_active = False
