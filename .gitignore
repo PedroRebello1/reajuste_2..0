@@ -12,3 +12,12 @@ __pycache__/
 
 # Instruções para o Claude Code: só deve existir localmente na pasta main
 CLAUDE.md
+
+# Find/: PDFs de reajuste (2022, 2023) e saídas com dados de beneficiários reais.
+# Só o conteúdo é ignorado; as pastas ficam versionadas vazias via .gitkeep.
+Find/2022/*
+!Find/2022/.gitkeep
+Find/2023/*
+!Find/2023/.gitkeep
+Find/output/*
+!Find/output/.gitkeep
