@@ -101,7 +101,7 @@ MES_REAJUSTE_POR_PLANO = {
 MES_LIMITE_REAJUSTE_2026 = 11
 MES_LIMITE_POR_ANO = {2026: MES_LIMITE_REAJUSTE_2026}
 
-vida_2026_active = False
+vida_2026_active = True
 essencial_2026_active = True
 
 def plano_2026_ativo(tipo_plano):
